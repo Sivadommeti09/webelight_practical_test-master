@@ -1,11 +1,5 @@
 pipeline {
     agent {
-        docker {
-            reuseNode true
-            image 'node:16.15'
-        }
-    }
-
     environment {
         // Override HOME to WORKSPACE
         HOME = "${WORKSPACE}"
