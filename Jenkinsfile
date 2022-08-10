@@ -1,28 +1,23 @@
 pipeline {
     agent {
         docker {
+            reuseNode true
             image 'node:16.15'
         }
     }
+
     environment {
-        CI = 'true'
+        // Override HOME to WORKSPACE
+        HOME = "${WORKSPACE}"
+        // or override default cache directory (~/.npm)
+        NPM_CONFIG_CACHE = "${WORKSPACE}/.npm"
     }
+
     stages {
         stage('Build') {
             steps {
                 sh 'npm install'
-            }
-        }
-        stage('Test') {
-            steps {
-                sh './jenkins/scripts/test.sh'
-            }
-        }
-        stage('Deliver') {
-            steps {
-                sh './jenkins/scripts/deliver.sh'
-                input message: 'Finished using the web site? (Click "Proceed" to continue)'
-                sh './jenkins/scripts/kill.sh'
+                sh 'npm run build'
             }
         }
     }
